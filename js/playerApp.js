@@ -9,12 +9,6 @@ define(['Consts', 'bootstrap', 'backbone.controller', 'ComBroker', 'Lib', 'Eleme
      A) NodeWebkitBridge client.connect(port, '192.168.81.135', function() ....
      B) In SignagePlayer Desktop PC c:\Program Files (x86)/SignagePlayer/config.xml
      C) In Intellij set Node-Web-Kit arguments of: 1234 8555
-
-     http://signage.me/components/sample/sample.json
-     http://signage.me/components/digg/digg.json
-     http://signage.me/assets/jsnin.png
-     http://www.digitalsignage.com/_images/logo.png
-
      */
     var App = Backbone.Controller.extend({
 
@@ -31,9 +25,12 @@ define(['Consts', 'bootstrap', 'backbone.controller', 'ComBroker', 'Lib', 'Eleme
             $.ajaxSetup({cache: false});
             $.ajaxSetup({headers: {'Authorization': ''}});
 
+            return;
+
             if (mode == 'node') {
-                var gui = require('nw.gui');
-                var mainAppWin = gui.Window.get();
+                self.m_gui = require('nw.gui');
+                self.m_win = self.m_gui.Window.get();
+                // var new_win = self.m_gui.Window.open('https://github.com');
                 var path = require('path');
                 // we know we are running in node, but are we running on Player side or remote debug?
                 BB.SIGNAGEPLAYER_MODE = path.dirname(process.execPath).indexOf('SignagePlayer') > -1 ? true : false;
@@ -43,7 +40,6 @@ define(['Consts', 'bootstrap', 'backbone.controller', 'ComBroker', 'Lib', 'Eleme
 
             self._listenPlayerError();
             self._listenDispose();
-            self._initViews();
             self._waitPlayerData();
         },
 
@@ -59,8 +55,9 @@ define(['Consts', 'bootstrap', 'backbone.controller', 'ComBroker', 'Lib', 'Eleme
                     var jData = x2js.xml_str2json(window.xmlData);
                     self._setStyle(jData.Data);
                     window.clearInterval(fd);
-                    self.m_SamplePlayerView.dataLoaded(jData.Data);
-                    self.m_stackView.selectView(self.m_SamplePlayerView);
+                    var new_win = self.m_gui.Window.open('https://github.com');
+                    //self.m_SamplePlayerView.dataLoaded(jData.Data);
+                    //self.m_stackView.selectView(self.m_SamplePlayerView);
                 }
             }, 1000);
         },
@@ -97,28 +94,6 @@ define(['Consts', 'bootstrap', 'backbone.controller', 'ComBroker', 'Lib', 'Eleme
                 BB.comBroker.stopListen(BB.EVENTS.ON_XMLDATA_ERROR);
                 BB.comBroker.stopListen(BB.EVENTS.ON_DISPOSE);
             });
-        },
-
-        /**
-         Initialize the Backbone views of the application
-         @method _initViews
-         **/
-        _initViews: function () {
-            var self = this;
-            self.m_stackView = new StackView.Fader({duration: 333});
-            BB.comBroker.setService(BB.EVENTS.APP_STACK_VIEW, self.m_stackView);
-
-            self.m_loadingView = new LoadingView({
-                el: Elements.LOADING_CONTAINER
-            });
-
-            self.m_SamplePlayerView = new SamplePlayerView({
-                el: Elements.SAMPLE_CONTAINER
-            });
-
-            self.m_stackView.addView(self.m_loadingView);
-            self.m_stackView.addView(self.m_SamplePlayerView);
-            self.m_stackView.selectView(self.m_loadingView);
         }
     });
 

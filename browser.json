@@ -1,8 +1,8 @@
 {
   "name": "browser",
-  "version": "1.0.437",
-  "url": "http://signage.me/components/browser/browser.zip",
+  "version": "1.0.438",
+  "url": "http://google.com",
   "property": "page.html",
   "desktopUseNode": false,
-  "debug": false
+  "debug": true
 }
