@@ -119,6 +119,47 @@ gulp.task('rsync', function (done) {
 });
 
 
+/******************************************
+ Copy common libs
+ ******************************************/
+var common = {
+    1: {
+        s: '/cygdrive/c/msweb/common/utils/',
+        d: localDir + '/utils/'
+    },
+    2: {
+        s: '/cygdrive/c/msweb/common/node_modules/',
+        d: localDir + '/node_modules/'
+    }
+};
+
+gulp.task('commonRsync', function (done) {
+    for (var i in common) {
+        var s = common[i]['s'];
+        var d = common[i]['d'];
+        console.log('copying files from ' + s + ' to ' + d)
+        var rsync = Rsync.build({
+            source: s,
+            destination: d
+        });
+        //rsync.delete(); // delete files on destination that do not exist in source
+        rsync.set('progress');
+        rsync.flags('avz');
+        console.log('running the command ' + rsync.command());
+        rsync.output(
+            function (data) {
+                console.log('sync: ' + data);
+            }, function (data) {
+                console.log('sync: ' + data);
+            }
+        );
+        rsync.execute(function (error, stdout, stderr) {
+            console.log('completed ' + error + ' ' + stdout + ' ' + stderr)
+            //done();
+        });
+    }
+});
+
 function reload() {
     if (1) {
         return browserSync.reload({
