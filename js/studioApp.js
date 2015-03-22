@@ -18,7 +18,7 @@ function getData() {
     m_data = {Data: {}};
     try {
         m_data.Data._urls = m_urls;
-        alert('saving ' + m_data.Data._urls);
+        // alert('saving ' + m_data.Data._urls);
     } catch (e) {
         log('err 2 ' + e);
     }
@@ -47,7 +47,7 @@ function setData(i_xmlData) {
         for (var i = 0; i < urls.length; i++) {
             $('#webPages').append('<span><input class="pages" value="' + urls[i] + '"><i class="remove fa fa-times-circle "></i></span>');
         }
-
+        listenRemovedUrl();
     } catch (e) {
         log('err 1 ' + e);
     }
@@ -63,29 +63,28 @@ function listenAddUrl() {
 
 function listenRemovedUrl() {
     $('.remove').off().on('click', function (e) {
-        $(this).closest('span').fadeOut(function(){
-            buildWebLinks();
+        $(this).closest('span').fadeOut('slow', function () {
         }).remove();
 
     });
 }
 
-function listenUpdateLinks() {
-    setTimeout(function(){
-        $('input').off().on('keyup', function (e) {
-            buildWebLinks();
-        });
-    },400);
-
-
-}
-
 function buildWebLinks() {
     m_urls = [];
-    // alert('building new');
+    listenRemovedUrl();
     $('.pages').each(function (e) {
         m_urls.push($(this).val());
     });
+}
+
+function listenUpdateLinks($i_elem){
+    var debouner = function () {
+        $('#logs').text(Math.random());
+        buildWebLinks();
+    };
+    var delay = _.debounce(debouner, 250, null);
+    $i_elem.mousemove(delay);
+    $i_elem.mouseleave(debouner);
 }
 
 /**
@@ -95,9 +94,11 @@ function buildWebLinks() {
 $(document).ready(function () {
     var self = this;
     $('.number').stepper({min: 0, max: 9999});
-    $('#tab-container').easytabs();
+    var $tabContainer = $('#tab-container').easytabs();
+    $tabContainer.easytabs();
+
     listenAddUrl();
     listenRemovedUrl();
-    listenUpdateLinks();
+    listenUpdateLinks($tabContainer);
 });
 
