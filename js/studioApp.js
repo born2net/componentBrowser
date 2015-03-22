@@ -8,6 +8,7 @@ var m_data = {};
 var hResource = 0;
 var skipSave = 0;
 var m_urls = [];
+var m_refresh = 60;
 
 /**
  SAVE: get settings from UI and save to local msdb
@@ -17,13 +18,15 @@ var m_urls = [];
 function getData() {
     m_data = {Data: {}};
     try {
+        if (!$.isNumeric(m_refresh))
+            m_refresh = 60;
+        m_data.Data._refresh = m_refresh;
         m_data.Data._urls = m_urls;
-        // alert('saving ' + m_data.Data._urls);
+        // log('saving ' + m_data.Data._urls);
     } catch (e) {
         log('err 2 ' + e);
     }
-    // alert(JSON.stringify(m_data));
-    // return data as xml
+    // log(JSON.stringify(m_data));
     return x2js.json2xml_str(m_data);
 }
 
@@ -40,6 +43,13 @@ function setData(i_xmlData) {
 
     try {
         m_data = x2js.xml_str2json(i_xmlData);
+
+        if (m_data.Data._refresh != null){
+            $('#refreshRate').val(m_data.Data._refresh);
+        } else {
+            $('#refreshRate').val(60);
+        }
+
         if (m_data.Data._urls == null)
             return;
         var urls = m_data.Data._urls.split(',');
@@ -55,7 +65,7 @@ function setData(i_xmlData) {
 
 function listenAddUrl() {
     $('#add').on('click', function (e) {
-        $('#webPages').append('<span><input class="pages" type="number" min="0" max="9999"><i class="remove fa fa-times-circle "></i></span>');
+        $('#webPages').append('<span><input class="pages"><i class="remove fa fa-times-circle "></i></span>');
         listenRemovedUrl();
         listenUpdateLinks();
     });
@@ -79,8 +89,9 @@ function buildWebLinks() {
 
 function listenUpdateLinks($i_elem){
     var debouner = function () {
-        $('#logs').text(Math.random());
+        // $('#logs').text(Math.random());
         buildWebLinks();
+        m_refresh = $('#refreshRate').val();
     };
     var delay = _.debounce(debouner, 250, null);
     $i_elem.mousemove(delay);
@@ -96,7 +107,6 @@ $(document).ready(function () {
     $('.number').stepper({min: 0, max: 9999});
     var $tabContainer = $('#tab-container').easytabs();
     $tabContainer.easytabs();
-
     listenAddUrl();
     listenRemovedUrl();
     listenUpdateLinks($tabContainer);
