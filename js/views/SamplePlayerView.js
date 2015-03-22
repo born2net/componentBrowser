@@ -56,7 +56,7 @@ define(['jquery', 'backbone', 'text!templates/DiggArticle.html', 'TweenLite', 'S
                     });
                 });
             } catch (e) {
-                alert('problem loading images ' + e);
+                log('problem loading images ' + e);
             }
         },
 

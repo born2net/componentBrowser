@@ -4,10 +4,21 @@ function playerLoad(i_xmlData) {
     }
     catch (e) {
         if (!BB) {
-            BB.comBroker.fire(BB.EVENTS.ON_XMLDATA_ERROR,this,this,e);
+            BB.comBroker.fire(BB.EVENTS.ON_XMLDATA_ERROR, this, this, e);
         } else {
-            alert(e)
+            log(e)
         }
+    }
+}
+
+function onCachingData(item) {
+    log('on cache data ' + item);
+    try {
+        BB.comBroker.fire(BB.EVENTS.ON_CACHING_DATA, this, this, {
+            data: item.data
+        });
+    } catch (e) {
+        log('on data err: ' + e)
     }
 }
 

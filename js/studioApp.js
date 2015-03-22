@@ -11,36 +11,6 @@ var hResource = 0;
 var skipSave = 0;
 
 /**
- Stop event, used when dropping resource
- @method preventDefault
- @param {Event} event
- **/
-function preventDefault(event) {
-    event.preventDefault();
-}
-
-/**
- Dropped (after dragged) resource onto target
- @method drop
- @param {Event} ev
- **/
-function drop(ev) {
-    ev.preventDefault();
-    var dropID = $(ev.target).attr('name');
-    var str = getDragData();
-    var data = JSON.parse(str);
-    var d0 = data[0];
-    var resource = d0.Resource;
-    var m_hRsource = parseInt(resource.hResource);
-    var name = buildResourceName(dropID);
-    m_hRsources[name] = m_hRsource;
-    // alert(JSON.stringify(m_hRsources));
-    getObjectValue(0, 'getResourcePath(' + m_hRsource + ')', function (b) {
-        $(ev.target).attr('src', JSON.parse(b));
-    });
-}
-
-/**
  SAVE: get settings from UI and save to local msdb
  @method getData
  @return {XML} json to xml data
@@ -65,21 +35,12 @@ function getData() {
             }
         }
     } catch (e) {
-        alert('err 2 ' + e);
+        log('err 2 ' + e);
     }
 
     // alert(JSON.stringify(m_data));
     // return data as xml
     return x2js.json2xml_str(m_data);
-}
-
-/**
- Construct the resource name saved into the msdb
- @method buildResourceName
- @param {Number} i_number
- **/
-function buildResourceName(i_number) {
-    return '_hResource' + i_number;
 }
 
 /**
@@ -121,67 +82,10 @@ function setData(i_xmlData) {
             $('#bgColor').val(m_data.Data._bgColor);
         }
     } catch (e) {
-        alert('err 1 ' + e);
+        log('err 1 ' + e);
     }
 }
 
-/**
- Alert the data that would be saved to msdb at time of execution
- @method showSavedData
- **/
-function showSavedData() {
-    alert(JSON.stringify(m_data));
-}
-
-/**
- Pick a random image from the resources (we get back all videos, images, swf, svg)
- but we selected to just accept png or jpg for this example. Of course you can
- choose videos or any other resource you like.
- Note that we load all resources since we pass a regexp of (".*")
- We could for example filter just resources starting with letter 'x'
- executing a regexp of 'getResources("^x")'
- @method showSavedData
- **/
-function pickRandom() {
-    try {
-
-        getObjectValue(0, 'getResources(".*")', function (resources) {
-            var oResources = JSON.parse(resources);
-            var images = [];
-            for (var i in oResources) {
-                if (oResources[i].type == 'png' || oResources[i].type == 'jpg')
-                    images.push(oResources[i]);
-            }
-            var random = _.random(0, images.length - 1);
-            var selected = images[random];
-            getObjectValue(0, 'getResourcePath(' + selected.handle + ')', function (e) {
-                $('#img3').attr('src', JSON.parse(e));
-            });
-        });
-
-    } catch (e) {
-        alert('err 3 ' + e);
-    }
-}
-
-/**
- Example pf creating a new event and adding command and parmams to it
- @method createEvent
- **/
-function createEvent() {
-    alert('addOnEve');
-    getObjectValue(0, 'addEvent("some_important_event","some_command","some_command_params")', function (e) {
-    });
-}
-
-/**
- Example of deleting an event
- @method deleteEvent
- **/
-function deleteEvent() {
-    getObjectValue(0, 'removeEventAt(0)', function (e) {
-    });
-}
 
 /**
  DOM Ready
@@ -189,20 +93,7 @@ function deleteEvent() {
  **/
 $(document).ready(function () {
     var self = this;
-
+    $('.number').stepper({min: 0, max: 9999});
     $('#tab-container').easytabs();
-
-    $('#pickRandom').on('click', function (e) {
-        pickRandom();
-    });
-
-    $('#showSavedData').on('click', function (e) {
-        showSavedData();
-    });
-
-    $('#remoteUrl').on('blur',function(){
-        var url = $(this).val();
-        $('#img4').attr('src',url);
-    });
 });
 

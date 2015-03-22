@@ -24,15 +24,13 @@ define(['jquery', 'backbone'], function ($, Backbone) {
          @param {String} msg
          **/
         log: function (msg) {
-            if (!window.debug)
-                return;
-            console.log(new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1") + ': ' + msg);
+            if (window.debug == undefined || window.debug)
+                alert(new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1") + ': ' + msg);
         },
 
         jlog: function (msg) {
-            if (!window.debug)
-                return;
-            console.log(new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1") + ': ' + JSON.stringify(msg));
+            if (window.debug == undefined || window.debug)
+                alert(new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1") + ': ' + JSON.stringify(msg));
         },
 
         /**
@@ -50,15 +48,15 @@ define(['jquery', 'backbone'], function ($, Backbone) {
             })(Backbone.View);
 
             /*
-            Backbone.Collection = (function (Collection) {
-                return Collection.extend({
-                    constructor: function (options) {
-                        this.options = options || {};
-                        Collection.apply(this, arguments);
-                    }
-                });
-            })(Backbone.Collection);
-            */
+             Backbone.Collection = (function (Collection) {
+             return Collection.extend({
+             constructor: function (options) {
+             this.options = options || {};
+             Collection.apply(this, arguments);
+             }
+             });
+             })(Backbone.Collection);
+             */
         },
 
         /**
@@ -240,7 +238,7 @@ define(['jquery', 'backbone'], function ($, Backbone) {
                 }
             }
             else
-                alert("cannot parse xml string!");
+                log("cannot parse xml string!");
             return dom;
         },
 

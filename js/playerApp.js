@@ -3,7 +3,7 @@
  @app app.js
  @license MIT
  **/
-define(['Consts', 'bootstrap', 'backbone.controller', 'ComBroker', 'Lib', 'Elements', 'SamplePlayerView', 'LoadingView', 'StackView', 'simplestorage'], function (Consts, bootstrap, backbonecontroller, ComBroker, Lib, Elements, SamplePlayerView, LoadingView, StackView, simplestorage) {
+define(['Consts', 'backbone.controller', 'ComBroker', 'Lib', 'Elements'], function (Consts, backbonecontroller, ComBroker, Lib, Elements) {
     /*
      To setup remote node web kit debug be sure to config correct ip address in:
      A) NodeWebkitBridge client.connect(port, '192.168.81.135', function() ....
@@ -22,11 +22,7 @@ define(['Consts', 'bootstrap', 'backbone.controller', 'ComBroker', 'Lib', 'Eleme
             BB.comBroker.name = 'AppBroker';
             window.log = BB.lib.log;
 
-            $.ajaxSetup({cache: false});
-            $.ajaxSetup({headers: {'Authorization': ''}});
-
-            return;
-
+            var mode = 'node';
             if (mode == 'node') {
                 self.m_gui = require('nw.gui');
                 self.m_win = self.m_gui.Window.get();
@@ -38,9 +34,55 @@ define(['Consts', 'bootstrap', 'backbone.controller', 'ComBroker', 'Lib', 'Eleme
                 BB.SIGNAGEPLAYER_MODE = null;
             }
 
+            self._loadPages();
             self._listenPlayerError();
             self._listenDispose();
             self._waitPlayerData();
+
+        },
+
+        /**
+         Load pages
+         @method _loadPages
+         **/
+        _loadPages: function(){
+            var self = this;
+            var $iFrame = $('#if');
+            var urls = ['http://cnn.com', 'http://yahoo.com', 'http://dance.com'];
+
+            function goToURL(i_url) {
+                $iFrame.attr('src', i_url);
+            }
+
+            self.m_gui = require('nw.gui');
+            self.m_win = self.m_gui.Window.get();
+
+            $iFrame.css({
+                minWidth: window.outerWidth,
+                minHeight: window.outerHeight
+            });
+
+            var fd = setInterval(function () {
+                var url = urls.shift();
+                if (url) {
+                    goToURL(url);
+
+                } else {
+                    clearInterval(fd);
+                }
+            }, 7000);
+
+            // intercept clicks on links and modify
+            $iFrame.on("load", function () {
+                var iframeContents = $(this).contents();
+                iframeContents.find("a").click(function (e) {
+                    e.preventDefault();
+                    var link = $(this).attr("href");
+                    goToURL('http://www.digitalsignage.com/' + link);
+                });
+            });
+
+            $iFrame.attr('src', 'http://digitalsignage.com');
         },
 
         /**
@@ -80,7 +122,7 @@ define(['Consts', 'bootstrap', 'backbone.controller', 'ComBroker', 'Lib', 'Eleme
             var self = this;
             BB.comBroker.listen(BB.EVENTS.ON_XMLDATA_ERROR, function (e) {
                 if (window.debug)
-                    alert('err parsing xdata: ' + e.edata);
+                    log('err parsing xdata: ' + e.edata);
             });
         },
 

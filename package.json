@@ -5,8 +5,8 @@
   "window": {
     "toolbar": true,
     "frame": true,
-    "x": 300,
-    "y": 100,
+    "x": 400,
+    "y": 400,
     "width": 1200,
     "height": 900
   }

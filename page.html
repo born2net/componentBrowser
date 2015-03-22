@@ -1,18 +1,25 @@
 <html>
 <head>
     <script>
-        window.debug = 0;
+        window.debug = 1;
     </script>
+    <link href="css/fontawesome/css/font-awesome.css" rel="stylesheet">
     <script type="text/javascript" src="bridge/As3JsBridge.js"></script>
     <script type="text/javascript" src="utils/xml2json.js"></script>
     <script type="text/javascript" src="js/common/jq/jq1.9.1.js"></script>
     <script type="text/javascript" src="utils/jquery.easytabs.js"></script>
     <script type="text/javascript" src="js/common/underscore/underscore.js"></script>
     <script type="text/javascript" src="js/common/backbone/backbone.js"></script>
+    <script type="text/javascript" src="js/common/stepper/jquery.fs.stepper.js"></script>
     <script type="text/javascript" src="utils/errCatch.js"></script>
     <script type="text/javascript" src="js/studioApp.js"></script>
-    <link href="css/fontawesome/css/font-awesome.css" rel="stylesheet">
+    <link href="js/common/stepper/jquery.fs.stepper.css" rel="stylesheet">
     <link href="css/page.css" rel="stylesheet">
+    <style>
+        button {
+            width: 50px;
+        }
+    </style>
 </head>
 
 
@@ -21,36 +28,33 @@
 
 <div id="tab-container" class='tab-container'>
     <ul class='etabs'>
-        <li class='tab'><a href="#tabs1">Settings</a></li>
-        <li class='tab'><a href="#tabs2">Drag over</a></li>
-        <li class='tab'><a href="#tabs3">remote url</a></li>
+        <li class='tab'><a href="#tabs1">Web pages</a></li>
     </ul>
     <div class='panel-container'>
         <div id="tabs1">
-            <label class="bolding">Background Color</label>
-            <input id="bgColor" type="text" style="width:100px;"/>
-            <hr/>
-            <div style="clear: both"></div>
-            <button id="showSavedData">Show html save data</button>
-            <hr/>
-            <button id="pickRandom">Pick a random image</button>
-            <p/>
-            <img id="img3"/>
-
-        </div>
-        <div id="tabs2">
-            <h2>Drag resource on top of target</h2>
-            <div id="draggedImages">
-                <img id="img1" name="1" ondragover="preventDefault(event)" onDrop="drop(event)"/>
-                <img id="img2" name="2" ondragover="preventDefault(event)" onDrop="drop(event)"/>
-            </div>
-        </div>
-        <div id="tabs3">
-            <h2>remote resources</h2>
-            <span class="bolding">url path:</span>
-            <input id="remoteUrl" type="text" style="width: 100px"/>
+            <button id="add">
+                <i class="fa fa-plus"></i>
+                add new pages
+            </button>
+            <br/><br/>
+            <span>
+                <input class="pages" type="number" min="0" max="9999"><i class="remove fa fa-times-circle "></i>
+            </span>
+            <span>
+                <input class="pages" type="number" min="0" max="9999"><i class="remove fa fa-times-circle "></i>
+            </span>
+            <span>
+                <input class="pages" type="number" min="0" max="9999"><i class="remove fa fa-times-circle "></i>
+            </span>
+            <span>
+                <input class="pages" type="number" min="0" max="9999"><i class="remove fa fa-times-circle "></i>
+            </span>
+            <span>
+                <input class="pages" type="number" min="0" max="9999"><i class="remove fa fa-times-circle "></i>
+            </span>
             <br/>
-            <img id="img4" style="padding-left: 50px"/>
+            <label class="bolding">Refresh time (minutes)</label>
+            <input class="number" type="text" style="width:200px; display: block"/>
         </div>
     </div>
 </div>
