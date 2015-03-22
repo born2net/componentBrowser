@@ -2,7 +2,6 @@
  MediaSignage Inc Digital Signage open source component
  This file serves as the HTML properties view for the Sample SignagePlayer component
  **/
-
 var x2js = new X2JS();
 var m_data = {};
 var hResource = 0;
@@ -63,6 +62,10 @@ function setData(i_xmlData) {
     }
 }
 
+/**
+ Listen to adding of new URL address
+ @method listenAddUrl
+ **/
 function listenAddUrl() {
     $('#add').on('click', function (e) {
         $('#webPages').append('<span><input class="pages"><i class="remove fa fa-times-circle "></i></span>');
@@ -71,6 +74,10 @@ function listenAddUrl() {
     });
 }
 
+/**
+ Listen to removal of URL address
+ @method listenAddUrl
+ **/
 function listenRemovedUrl() {
     $('.remove').off().on('click', function (e) {
         $(this).closest('span').fadeOut('slow', function () {
@@ -79,6 +86,10 @@ function listenRemovedUrl() {
     });
 }
 
+/**
+ Reconstruct the array / list of URL addresses
+ @method listenAddUrl
+ **/
 function buildWebLinks() {
     m_urls = [];
     listenRemovedUrl();
@@ -87,23 +98,26 @@ function buildWebLinks() {
     });
 }
 
+/**
+ Update the local msdb on changes to UI, use debounce for better performance
+ @method listenUpdateLinks
+ **/
 function listenUpdateLinks($i_elem){
-    var debouner = function () {
+    var debouncer = function () {
         // $('#logs').text(Math.random());
         buildWebLinks();
         m_refresh = $('#refreshRate').val();
     };
-    var delay = _.debounce(debouner, 250, null);
+    var delay = _.debounce(debouncer, 250, null);
     $i_elem.mousemove(delay);
-    $i_elem.mouseleave(debouner);
+    $i_elem.mouseleave(debouncer);
 }
 
 /**
- DOM Ready
+ DOM Ready init functions
  @method onReady
  **/
 $(document).ready(function () {
-    var self = this;
     $('.number').stepper({min: 0, max: 9999});
     var $tabContainer = $('#tab-container').easytabs();
     $tabContainer.easytabs();
