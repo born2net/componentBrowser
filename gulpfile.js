@@ -130,6 +130,10 @@ var common = {
     2: {
         s: '/cygdrive/c/msweb/common/node_modules/',
         d: localDir + '/node_modules/'
+    },
+    3: {
+        s: '/cygdrive/c/msweb/common/bridge/',
+        d: localDir + '/bridge/'
     }
 };
 
@@ -159,6 +163,7 @@ gulp.task('commonRsync', function (done) {
         });
     }
 });
+
 
 function reload() {
     if (1) {
