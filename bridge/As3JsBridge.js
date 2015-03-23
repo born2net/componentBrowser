@@ -3,8 +3,7 @@ function includeJS(incFile)
     document.write('<script type="text/javascript" src="' + incFile+ '"></scr' + 'ipt>');
 }
 
-
-function QSHandler() 
+function QSHandler()
 {
   var qs=location.search.substr(1).split("&");
   this.data=[];

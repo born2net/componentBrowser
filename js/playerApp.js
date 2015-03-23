@@ -21,6 +21,7 @@ define(['Consts', 'backbone.controller', 'ComBroker', 'Lib', 'Elements'], functi
             BB.comBroker = new ComBroker();
             BB.comBroker.name = 'AppBroker';
             window.log = BB.lib.log;
+            self.m_loaderInterval = null;
 
             var mode = 'node';
             if (mode == 'node') {
@@ -34,7 +35,6 @@ define(['Consts', 'backbone.controller', 'ComBroker', 'Lib', 'Elements'], functi
                 BB.SIGNAGEPLAYER_MODE = null;
             }
 
-            self._loadPages();
             self._listenPlayerError();
             self._listenDispose();
             self._waitPlayerData();
@@ -44,45 +44,46 @@ define(['Consts', 'backbone.controller', 'ComBroker', 'Lib', 'Elements'], functi
         /**
          Load pages
          @method _loadPages
+         @params {Object} i_jData
          **/
-        _loadPages: function(){
+        _loadPages: function (i_jData) {
             var self = this;
+
             var $iFrame = $('#if');
-            var urls = ['http://cnn.com', 'http://yahoo.com', 'http://dance.com'];
-
-            function goToURL(i_url) {
-                $iFrame.attr('src', i_url);
-            }
-
-            self.m_gui = require('nw.gui');
-            self.m_win = self.m_gui.Window.get();
-
             $iFrame.css({
                 minWidth: window.outerWidth,
                 minHeight: window.outerHeight
             });
 
-            var fd = setInterval(function () {
+            var refresh = $.isNumeric(i_jData._refresh) ? i_jData._refresh : 60;
+            refresh = refresh * 60000;
+            var urls = i_jData._urls.split(',');
+
+            function goToURL(i_url) {
+                $iFrame.attr('src', i_url);
+            }
+
+            function getNextLink() {
                 var url = urls.shift();
-                if (url) {
-                    goToURL(url);
+                if (url == undefined)
+                    urls = i_jData._urls.split(',');
+                if (url == undefined)
+                    return;
+                goToURL(url);
+            }
 
-                } else {
-                    clearInterval(fd);
-                }
-            }, 7000);
+            getNextLink();
+            self.m_loaderInterval = setInterval(getNextLink, refresh);
 
-            // intercept clicks on links and modify
-            $iFrame.on("load", function () {
-                var iframeContents = $(this).contents();
-                iframeContents.find("a").click(function (e) {
-                    e.preventDefault();
-                    var link = $(this).attr("href");
-                    goToURL('http://www.digitalsignage.com/' + link);
-                });
-            });
-
-            $iFrame.attr('src', 'http://digitalsignage.com');
+            /* intercept clicks on links and modify */
+            //$iFrame.on("load", function () {
+            //    var iframeContents = $(this).contents();
+            //    iframeContents.find("a").click(function (e) {
+            //        e.preventDefault();
+            //        var link = $(this).attr("href");
+            //        goToURL('http://www.digitalsignage.com/' + link);
+            //    });
+            //});
         },
 
         /**
@@ -95,23 +96,13 @@ define(['Consts', 'backbone.controller', 'ComBroker', 'Lib', 'Elements'], functi
                 if (window.xmlData) {
                     var x2js = new X2JS();
                     var jData = x2js.xml_str2json(window.xmlData);
-                    self._setStyle(jData.Data);
                     window.clearInterval(fd);
-                    var new_win = self.m_gui.Window.open('https://github.com');
+                    self._loadPages(jData.Data);
+                    // var new_win = self.m_gui.Window.open('https://github.com');
                     //self.m_SamplePlayerView.dataLoaded(jData.Data);
                     //self.m_stackView.selectView(self.m_SamplePlayerView);
                 }
             }, 1000);
-        },
-
-        /**
-         Set the background color and styling of component
-         @method _setStyle
-         @param {string} i_style
-         **/
-        _setStyle: function (i_style) {
-            var self = this;
-            $('.bgColor').css({'backgroundColor': i_style._bgColor})
         },
 
         /**
@@ -132,6 +123,7 @@ define(['Consts', 'backbone.controller', 'ComBroker', 'Lib', 'Elements'], functi
          **/
         _listenDispose: function () {
             var self = this;
+            clearInterval(self.m_loaderInterval);
             BB.comBroker.listen(BB.EVENTS.ON_DISPOSE, function (e) {
                 BB.comBroker.stopListen(BB.EVENTS.ON_XMLDATA_ERROR);
                 BB.comBroker.stopListen(BB.EVENTS.ON_DISPOSE);
