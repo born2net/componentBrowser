@@ -1,3 +1,6 @@
+var debug = 0;
+var remote_ip = '127.0.0.1';
+
 function includeJS(incFile)
 {
     document.write('<script type="text/javascript" src="' + incFile+ '"></scr' + 'ipt>');

@@ -23,7 +23,6 @@ define(['Consts', 'backbone.controller', 'ComBroker', 'Lib', 'Elements'], functi
             window.log = BB.lib.log;
             self.m_loaderInterval = null;
 
-            var mode = 'node';
             if (mode == 'node') {
                 self.m_gui = require('nw.gui');
                 self.m_win = self.m_gui.Window.get();
@@ -111,8 +110,9 @@ define(['Consts', 'backbone.controller', 'ComBroker', 'Lib', 'Elements'], functi
          **/
         _listenPlayerError: function () {
             var self = this;
+            log('123')
             BB.comBroker.listen(BB.EVENTS.ON_XMLDATA_ERROR, function (e) {
-                if (window.debug)
+                if (debug)
                     log('err parsing xdata: ' + e.edata);
             });
         },

@@ -24,12 +24,12 @@ define(['jquery', 'backbone'], function ($, Backbone) {
          @param {String} msg
          **/
         log: function (msg) {
-            if (window.debug == undefined || window.debug)
+            if (debug)
                 alert(new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1") + ': ' + msg);
         },
 
         jlog: function (msg) {
-            if (window.debug == undefined || window.debug)
+            if ( debug)
                 alert(new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1") + ': ' + JSON.stringify(msg));
         },
 
