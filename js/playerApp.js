@@ -110,7 +110,6 @@ define(['Consts', 'backbone.controller', 'ComBroker', 'Lib', 'Elements'], functi
          **/
         _listenPlayerError: function () {
             var self = this;
-            log('123')
             BB.comBroker.listen(BB.EVENTS.ON_XMLDATA_ERROR, function (e) {
                 if (debug)
                     log('err parsing xdata: ' + e.edata);

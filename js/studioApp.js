@@ -9,7 +9,6 @@ var skipSave = 0;
 var m_urls = [];
 var m_refresh = 60;
 
-log('hello');
 /**
  SAVE: get settings from UI and save to local msdb
  @method getData
