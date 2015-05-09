@@ -55,8 +55,14 @@ define(['Consts', 'backbone.controller', 'ComBroker', 'Lib', 'Elements'], functi
             });
 
             var refresh = $.isNumeric(i_jData._refresh) ? i_jData._refresh : 60;
+            var urls;
             refresh = refresh * 60000;
-            var urls = i_jData._urls.split(',');
+            if (_.isUndefined(i_jData._urls) || i_jData._urls == ''){
+                urls = ['http://www.google.com'];
+            } else {
+                urls = i_jData._urls.split(',');
+            }
+
 
             function goToURL(i_url) {
                 $iFrame.attr('src', i_url);

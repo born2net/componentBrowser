@@ -1,5 +1,6 @@
 var debug = 0;
 var remote_ip = '127.0.0.1';
+// var remote_ip = '192.168.81.135';
 
 function includeJS(incFile)
 {
